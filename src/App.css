@@ -1,0 +1,29 @@
+body {
+    background-color: #d1d2d3;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header-shadow {
+    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.3P);
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.2;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.animate-blink {
+    animation: blink 1s infinite;
+}
