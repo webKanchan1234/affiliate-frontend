@@ -10,6 +10,7 @@ import Model from "../../common/Model";
 import DynamicForm from "../../common/DynamicForm";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet-async";
+import { IoMdEye } from "react-icons/io";
 
 const Products = () => {
 
@@ -148,7 +149,7 @@ const Products = () => {
     dispatch(getAllCategories());
   }, [dispatch]);
 
-  // console.log(products)
+  // console.log(productsData)
   // Fetch products when component mounts
  
 
@@ -169,13 +170,34 @@ const Products = () => {
     { key: "name", label: "Product Name" },
     { key: "categoryId", label: "Category", render: (row) => row.category?.title || "N/A" }, // Extract title
     { key: "price", label: "Price" },
-    { key: "totalReviews", label: "Total Reviews", render: (row) => row.reviews?.length || 0 },
+   
+    { 
+      key: "seereview", 
+      label: "Reviews", 
+      render: (row) => (
+        row.adminReview?.length ? (
+          <button 
+            onClick={() => handleSee(row)}
+            className="text-blue-500 hover:underline cursor-pointer"
+          >
+            <IoMdEye size={20} />
+          </button>
+        ) : (
+          <span className="text-gray-500">No Reviews</span>
+        )
+      )
+    }
   ,
   ];
 
   // Handle edit and delete
   const handleEdit = (product) => {
     navigate("/admin/update-product", { state: { product } });
+  };
+
+  const handleSee = (product) => {
+    // console.log(product)
+    navigate(`/review/${product.urlName}`);
   };
   
   const handleDelete = async (product) => {
@@ -243,7 +265,7 @@ const Products = () => {
 
       {/* Ensure products exist before rendering Table */}
       {productsData.length > 0 ? (
-        <Table title="Manage Products" columns={columns} data={[...productsData].reverse()} onEdit={handleEdit} onDelete={handleDelete} onView={handleView} />
+        <Table title="Manage Products" columns={columns} data={[...productsData].reverse()} onEdit={handleEdit} onSee={handleSee} onDelete={handleDelete} onView={handleView} />
       ) : (
         <p className="text-center text-gray-500 mt-4">No products available.</p>
       )}

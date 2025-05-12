@@ -14,13 +14,13 @@ export const handleApiError = (error) => {
       } else if (data && data.message) {
         return data.message; // Use the error message from the server
       } else {
-        return "An unexpected error occurred.";
+        return data;
       }
     } else if (error.request) {
       // The request was made but no response was received
       return "Network error. Please check your internet connection.";
     } else {
       // Something happened in setting up the request
-      return "An unexpected error occurred.";
+      return data;
     }
   };

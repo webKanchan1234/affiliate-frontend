@@ -90,10 +90,10 @@ const Messages = () => {
               </div>
 
               {/* Add Button */}
-              <Link to={"/admin/add-brand"} className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+              {/* <Link to={"/admin/add-brand"} className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
                 <FiPlus size={20} />
                 <span >Add</span>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>

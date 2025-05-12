@@ -1,6 +1,6 @@
 import React from "react";
 
-const Loader = ({ loading, error }) => {
+const LoadingSpinner = ({ loading, error }) => {
   if (!loading) return null;
 
   return (
@@ -20,4 +20,4 @@ const Loader = ({ loading, error }) => {
   );
 };
 
-export default Loader;
+export default LoadingSpinner;

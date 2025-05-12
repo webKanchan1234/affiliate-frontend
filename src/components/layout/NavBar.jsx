@@ -124,8 +124,10 @@ const Navbar = ({ isServerDown }) => {
       </div>
 
       <div className="flex items-center space-x-4">
-        <Bell className="text-gray-400 hover:text-white cursor-pointer transition-colors" size={20} />
+        
         {isAuthenticated ? (
+          <>
+          <Bell className="text-gray-400 hover:text-white cursor-pointer transition-colors" size={20} />
           <div className="relative" onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
             <img
               src={BASE_URL + user?.image || "https://i.pravatar.cc/40?img=5"}
@@ -148,11 +150,17 @@ const Navbar = ({ isServerDown }) => {
               </div>
             )}
           </div>
-        ) : (
           <>
-            <Link to="/admin/login" className="text-gray-400 hover:text-white cursor-pointer transition-colors">Login/Signup</Link>
+            <Link to="/admin-login/login" className="text-gray-400 hover:text-white cursor-pointer transition-colors">Login/Signup</Link>
 
           </>
+          </>
+        ) : (
+          // <>
+          //   <Link to="/admin/login" className="text-gray-400 hover:text-white cursor-pointer transition-colors">Login/Signup</Link>
+
+          // </>
+          <h1></h1>
         )}
         <Link
           to="/submit/proof"

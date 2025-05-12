@@ -213,8 +213,5 @@ export const productReducers = {
   productsByCategory: productsByCategoryReducer.reducer,
   productsByBrand: productsByBrandReducer.reducer,
   productsBySubcategory: productsBySubcategoryReducer.reducer,
-  // getProductById: getProductByIdSlice.reducer,
-  // createProduct: createProductSlice.reducer,
-  // updateProduct: updateProductSlice.reducer,
-  // deleteProduct: deleteProductSlice.reducer,
+
 };

@@ -7,7 +7,7 @@ const ServerStatus = () => {
   useEffect(() => {
     const checkServer = async () => {
       try {
-        await axios.get("http://localhost:8080/health"); // Change this to your actual health-check endpoint
+        await axios.get(`${import.meta.env.VITE_BASE_URL}/health`); // Change this to your actual health-check endpoint
         setServerDown(false);
       } catch (error) {
         setServerDown(true);

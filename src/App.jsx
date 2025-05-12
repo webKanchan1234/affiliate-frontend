@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import "./App.css"
+import React, { useEffect, useState, lazy, Suspense } from "react";
+import "./App.css";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { HelmetProvider } from "react-helmet-async";
@@ -8,165 +8,302 @@ import { useSelector } from "react-redux";
 import Navbar from "./components/layout/NavBar";
 import Header from "./components/layout/Header";
 import MoveToTop from "./components/movetotop/MoveToTop";
-import Home from "./pages/home/Home";
-import Category from "./components/category/Category";
-import ProductDetails from "./components/products/ProductDetails";
-// import Review from "./components/review/Review";
-import Dashboard from "./components/admin/dashboard/Dashboard";
-import Products from "./components/admin/product/Products";
-import Brands from "./components/admin/brand/Brands";
-import Payments from "./components/admin/payment/Payments";
-import Categories from "./components/admin/category/Categories";
-import AddProduct from "./components/admin/product/AddProduct";
-import AddCategory from "./components/admin/category/AddCategory";
-import AddBrand from "./components/admin/brand/AddBrand";
-import Users from "./components/admin/user/Users";
-import Login from "./components/loginSignUp/Login";
-import Register from "./components/loginSignUp/Register";
-import PublicRoute from "./routes/PublicRoute";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import AdminLayout from "./components/admin/adminheader/AdminLayout";
-import Profile from "./components/user/Profile";
-import UserRoute from "./routes/UserRoute";
-import UpdateBrand from "./components/admin/brand/UpdateBrand";
-import UpdateProduct from "./components/admin/product/UpdateProduct";
-import SubCategory from "./components/category/SubCategory";
+import Footer from "./components/footer/Footer";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import ServerStatus from "./components/common/ServerStatus";
 import axios from "axios";
-import Brand from "./components/brand/Brand";
-import Reviews from "./components/admin/review/Reviews";
-import AdminReviewCreate from "./components/admin/review/AdminReviewCreate";
-import ProductReview from "./components/review/ProductReview";
-import WriteReview from "./components/review/WriteReview";
-import Footer from "./components/footer/Footer";
-import Search from "./components/common/Search";
-import DynamicPage from "./pages/dynamicPage/DynamicPage";
-import SubmitProof from "./components/payment/SubmitProof";
-import Messages from "./components/admin/message/Messages";
 
+// Lazy-loaded components
+const Home = lazy(() => import("./pages/home/Home"));
+const Category = lazy(() => import("./components/category/Category"));
+const Brand = lazy(() => import("./components/brand/Brand"));
+const ProductDetails = lazy(() => import("./components/products/ProductDetails"));
+const SubCategory = lazy(() => import("./components/category/SubCategory"));
+const WriteReview = lazy(() => import("./components/review/WriteReview"));
+const Search = lazy(() => import("./components/common/Search"));
+const DynamicPage = lazy(() => import("./pages/dynamicPage/DynamicPage"));
+const SubmitProof = lazy(() => import("./components/payment/SubmitProof"));
+const ProductReview = lazy(() => import("./components/review/ProductReview"));
+const Login = lazy(() => import("./components/loginSignUp/Login"));
+const Register = lazy(() => import("./components/loginSignUp/Register"));
+const Profile = lazy(() => import("./components/user/Profile"));
+const NotFound = lazy(() => import("./components/notFound/NotFound"));
+
+// Admin components
+const AdminLayout = lazy(() => import("./components/admin/adminheader/AdminLayout"));
+const Dashboard = lazy(() => import("./components/admin/dashboard/Dashboard"));
+const Products = lazy(() => import("./components/admin/product/Products"));
+const AddProduct = lazy(() => import("./components/admin/product/AddProduct"));
+const UpdateProduct = lazy(() => import("./components/admin/product/UpdateProduct"));
+const Categories = lazy(() => import("./components/admin/category/Categories"));
+const AddCategory = lazy(() => import("./components/admin/category/AddCategory"));
+const Brands = lazy(() => import("./components/admin/brand/Brands"));
+const AddBrand = lazy(() => import("./components/admin/brand/AddBrand"));
+const Payments = lazy(() => import("./components/admin/payment/Payments"));
+const Messages = lazy(() => import("./components/admin/message/Messages"));
+const Reviews = lazy(() => import("./components/admin/review/Reviews"));
+const AdminReviewCreate = lazy(() => import("./components/admin/review/AdminReviewCreate"));
+const Users = lazy(() => import("./components/admin/user/Users"));
+
+// Routes
+const PublicRoute = lazy(() => import("./routes/PublicRoute"));
+const ProtectedRoute = lazy(() => import("./routes/ProtectedRoute"));
+const UserRoute = lazy(() => import("./routes/UserRoute"));
 
 function App() {
   return (
     <ErrorBoundary>
-
       <Router>
-        <AppContent />
+        <Suspense fallback={<div className="loading">Loading...</div>}>
+          <AppContent />
+        </Suspense>
       </Router>
     </ErrorBoundary>
   );
 }
 
-export default App;
-
 function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
-
   const [serverDown, setServerDown] = useState(false);
 
   useEffect(() => {
-    let prevStatus = serverDown; // Store previous state
-  
+    let isMounted = true;
+    const controller = new AbortController();
+
     const checkServer = async () => {
       try {
-        const data=await axios.get("http://localhost:8080/health");
-        console.log("servver",data)
-        if (serverDown) {
-          console.log("Backend is back online! Fetching data...");
-          fetchData(); // Fetch data only when coming online
-        }
-        setServerDown(false);
-      } catch (error) {
-        setServerDown(true);
-      }
-    };
-  
-    const fetchData = async () => {
-      try {
-        // Example: Fetch products/categories when server is online
-        // const response = await axios.get("http://localhost:8080/products");
-        // console.log("Updated Products:", response.data);
-      } catch (error) {
-        // console.error("Error fetching data:", error);
-      }
-    };
-  
-    checkServer();
-    const interval = setInterval(checkServer, 5000);
-  
-    return () => clearInterval(interval);
-  }, [serverDown]); // Dependency to detect state change
-  
+        const { signal } = controller;
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/health`, { signal });
 
-  // console.log(serverDown)
-  
+        if (isMounted && serverDown) {
+          console.log("Backend is back online!");
+          setServerDown(false);
+        }
+      } catch (error) {
+        if (isMounted && !axios.isCancel(error)) {
+          setServerDown(true);
+        }
+      }
+    };
+
+    checkServer();
+    const interval = setInterval(checkServer, 30000); // Check every 30 seconds
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+      controller.abort();
+    };
+  }, [serverDown]);
 
   return (
-    <>
+    <HelmetProvider>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
-      <HelmetProvider>
-        <ToastContainer />
-        <ServerStatus />
-        {/* {!isAdminRoute && <Navbar />} */}
-        {!isAdminRoute && <Navbar isServerDown={serverDown} />}
-      {!isAdminRoute  && <Header />}
+      <ServerStatus />
 
+      {!isAdminRoute && (
+        <>
+          <Navbar isServerDown={serverDown} />
+          <Header />
+        </>
+      )}
 
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home isServerDown={serverDown} />} />
-          <Route path="/category/:categoryName" element={<Category />} />
-          <Route path="/brand/:brandName" element={<Brand />} />
-          <Route path="/:category/:subcategory" element={<SubCategory />} />
-          
-          <Route path="/:details" element={<ProductDetails />} />
-          <Route path="/:productName-write-review.html" element={<WriteReview />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/page/:pageName" element={<DynamicPage />} />
-          {/* <Route path="/product/:details" element={<ProductDetails />} /> */}
-          <Route path="/review/:url" element={<ProductReview />} />
-          <Route path="/submit/proof" element={<SubmitProof />} />
-          {/* <Route exact path="/:productName-write-review" element={<WriteReview />} /> */}
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <Home isServerDown={serverDown} />
+          </Suspense>
+        } />
 
-          {/* Public Auth Routes (Prevent Access if Logged In) */}
-          <Route element={<PublicRoute />}>
-            <Route path="/admin/login" element={<Login />} />
-            <Route path="/admin/register" element={<Register />} />
+        <Route path="/category/:categoryName" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <Category />
+          </Suspense>
+        } />
+
+        <Route path="/brand/:brandName" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <Brand />
+          </Suspense>
+        } />
+
+        <Route path="/:category/:subcategory" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <SubCategory />
+          </Suspense>
+        } />
+
+        <Route path="/:details" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProductDetails />
+          </Suspense>
+        } />
+
+        <Route path="/:productName-write-review.html" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <WriteReview />
+          </Suspense>
+        } />
+
+        <Route path="/search" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <Search />
+          </Suspense>
+        } />
+
+        <Route path="/page/:pageName" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <DynamicPage />
+          </Suspense>
+        } />
+
+        <Route path="/review/:url" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProductReview />
+          </Suspense>
+        } />
+
+        <Route path="/submit/proof" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <SubmitProof />
+          </Suspense>
+        } />
+
+        {/* Public Auth Routes */}
+        <Route element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <PublicRoute />
+          </Suspense>
+        }>
+          <Route path="/admin-login/login" element={
+            <Suspense fallback={<div>Loading...</div>}>
+              <Login />
+            </Suspense>
+          } />
+          <Route path="/admin/register" element={
+            <Suspense fallback={<div>Loading...</div>}>
+              <Register />
+            </Suspense>
+          } />
+        </Route>
+
+        {/* User Routes */}
+        <Route element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <UserRoute />
+          </Suspense>
+        }>
+          <Route path="/user/profile" element={
+            <Suspense fallback={<div>Loading...</div>}>
+              <Profile />
+            </Suspense>
+          } />
+        </Route>
+
+        {/* Admin Routes */}
+        <Route element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProtectedRoute adminOnly={true} />
+          </Suspense>
+        }>
+          <Route element={
+            <Suspense fallback={<div>Loading...</div>}>
+              <AdminLayout />
+            </Suspense>
+          }>
+            <Route path="/admin/dashboard" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <Dashboard />
+              </Suspense>
+            } />
+            <Route path="/admin/products" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <Products />
+              </Suspense>
+            } />
+            <Route path="/admin/add-product" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AddProduct />
+              </Suspense>
+            } />
+            <Route path="/admin/update-product" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <UpdateProduct />
+              </Suspense>
+            } />
+            <Route path="/admin/categories" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <Categories />
+              </Suspense>
+            } />
+            <Route path="/admin/add-category" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AddCategory />
+              </Suspense>
+            } />
+            <Route path="/admin/brands" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <Brands />
+              </Suspense>
+            } />
+            <Route path="/admin/add-brand" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AddBrand />
+              </Suspense>
+            } />
+            <Route path="/admin/payments" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <Payments />
+              </Suspense>
+            } />
+            <Route path="/admin/messages" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <Messages />
+              </Suspense>
+            } />
+            <Route path="/admin/reviews" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <Reviews />
+              </Suspense>
+            } />
+            <Route path="/admin/create-review/:productId" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <AdminReviewCreate />
+              </Suspense>
+            } />
+            <Route path="/admin/users" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <Users />
+              </Suspense>
+            } />
           </Route>
+        </Route>
 
-          {/* Protected Route for Logged-in Users */}
-          <Route element={<UserRoute />}>
-            <Route path="/user/profile" element={<Profile />} />
-          </Route>
+        {/* 404 Route */}
+        <Route path="*" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <NotFound />
+          </Suspense>
+        } />
+      </Routes>
 
-          {/* Protected Admin Routes */}
-          <Route element={<ProtectedRoute adminOnly={true} />}>
-            <Route element={<AdminLayout />}>
-              <Route path="/admin/dashboard" element={<Dashboard />} />
-              <Route path="/admin/products" element={<Products />} />
-              <Route path="/admin/add-product" element={<AddProduct />} />
-              <Route path="/admin/update-product" element={<UpdateProduct />} />
-              <Route path="/admin/categories" element={<Categories />} />
-              <Route path="/admin/add-category" element={<AddCategory />} />
-              <Route path="/admin/brands" element={<Brands />} />
-              <Route path="/admin/add-brand" element={<AddBrand />} />
-              <Route path="/admin/payments" element={<Payments />} />
-              <Route path="/admin/messages" element={<Messages />} />
-              <Route path="/admin/reviews" element={<Reviews />} />
-              <Route path="/admin/create-review/:productId" element={<AdminReviewCreate />} />
-              {/* <Route path="/admin/update-brand" element={<UpdateBrand />} /> */}
-              <Route path="/admin/users" element={<Users />} />
-            </Route>
-          </Route>
-          {/* Redirect all unknown routes to Home */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-
-        <MoveToTop />
-        <Footer/>
-      </HelmetProvider>
-
-    </>
+      <MoveToTop />
+      {!isAdminRoute && <Footer />}
+    </HelmetProvider>
   );
 }
+
+export default App;

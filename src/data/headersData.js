@@ -49,6 +49,10 @@ export const headersData = [
         link: "/mobiles/upcoming-mobiles"
     },
     {
+        label: "Latest Mobiles",
+        link: "/mobiles/latest-mobiles"
+    },
+    {
         label: "Electronics",
         subMenu: [
             {

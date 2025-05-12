@@ -103,15 +103,12 @@ const Brands = () => {
 
     if (brandData.image instanceof File) {
       formData.append("image", brandData.image);
-    } else {
-      console.error("Image is not a valid file:", brandData.image);
-      return;
-    }
+    } 
 
     // ✅ Debug FormData
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    // for (let pair of formData.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
     // console.log(selectedId);
 
     // console.log(brandId,selectedId)

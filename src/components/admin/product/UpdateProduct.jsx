@@ -6,6 +6,7 @@ import { getAllCategories } from "../../../redux/actions/categoryAction";
 import { createProductAction, updateProductAction } from "../../../redux/actions/productAction";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet-async";
+import { getAllBrandsAction } from "../../../redux/actions/brandAction";
 
 const UpdateProduct = () => {
     const location = useLocation();
@@ -13,9 +14,11 @@ const UpdateProduct = () => {
     const navigate = useNavigate();
     const productFromState = location.state?.product || null;
     const { categories } = useSelector((state) => state.categories);
+    const { brands, loading, error } = useSelector((state) => state.allBrands);
 
     const [selectedId, setSelectedId] = useState(null)
-    console.log("selectedId", selectedId)
+    const [selectedbrand, setSelectedbrand] = useState(null)
+    // console.log("selectedId", selectedId)
 
     const [productData, setProductData] = useState(
         productFromState ? { ...productFromState, images: productFromState.images || [] } : {
@@ -118,6 +121,7 @@ const UpdateProduct = () => {
     // Fetch categories on component mount
     useEffect(() => {
         dispatch(getAllCategories());
+        dispatch(getAllBrandsAction());
     }, [dispatch]);
 
     useEffect(() => {
@@ -125,8 +129,14 @@ const UpdateProduct = () => {
             const selectedCategory = categories.find((category) => category.title === productData.category);
             setSelectedId(selectedCategory?.categoryId || null);
         }
-    }, [productData.category, categories]);
+        if (brands.length > 0) {
+            const selected = brands.find((brand) => brand.title === productData.brand);
+            setSelectedbrand(selected?.brandId || null);
+        }
+    }, [productData.category,productData.brand, categories,brands]);
 
+    // console.log(selectedId)
+    // console.log(selectedbrand)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -137,6 +147,11 @@ const UpdateProduct = () => {
         // Remove unnecessary fields
         delete productDataCopy.images;
         delete productDataCopy.category;
+        delete productDataCopy.brand;
+        delete productDataCopy.productId;
+        delete productDataCopy.adminReview;
+        delete productDataCopy.reviews;
+        delete productDataCopy.imageUrls;
 
         // Append product JSON as a string
         formData.append("product", JSON.stringify(productDataCopy));
@@ -152,10 +167,11 @@ const UpdateProduct = () => {
         // for (let pair of formData.entries()) {
         //     console.log(pair[0], pair[1]);
         // }
+        
 
         try {
 
-            dispatch(updateProductAction({ productId: productId, categoryId: selectedId, data: formData }))
+            dispatch(updateProductAction({ productId: productId, categoryId: selectedId,brandId:selectedbrand, data: formData }))
                 .unwrap()
                 .then(() => {
                     toast.success("product updated successfully!");
@@ -194,6 +210,7 @@ const UpdateProduct = () => {
                     setFormData={setProductData}
                     handleSubmit={handleSubmit}
                     categories={categories}
+                    brands={brands}
                 />
             </div>
         </div>

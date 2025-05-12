@@ -120,7 +120,7 @@ const SubmitProof = () => {
     //   toast.error(error.response?.data?.message || "Submission failed!");
     // }
 
-    console.log(data);
+    // console.log(data);
     dispatch(submitProofAction(data))
       .unwrap()
       .then((response) => {
@@ -145,6 +145,10 @@ const SubmitProof = () => {
   };
 
   return (
+    <div className="min-h-[calc(70vh-120px)]  items-center justify-center bg-gray-50 py-10 px-4">
+      <h1 className="text-lg sm:text-xl font-semibold mb-2 text-center">
+        🎉 Buy from our affiliate link, submit your Order ID, and get an exclusive reward!
+      </h1>
     <div className="max-w-lg mx-auto bg-white p-6 shadow-lg rounded-lg mt-10">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Affiliate Reward System</h2>
 
@@ -274,7 +278,7 @@ const SubmitProof = () => {
             Check Submission Status
           </button>
 
-          {submissionStatus && (
+          {submissionStatus && submissionStatus.length>0 && (
             <div className={`p-3 rounded-lg text-center text-white font-bold mt-3 
     ${submissionStatus === "DONE" ? "bg-green-500" :
                 submissionStatus === "PENDING" ? "bg-yellow-500" :
@@ -289,6 +293,7 @@ const SubmitProof = () => {
           )}
         </div>
       )}
+    </div>
     </div>
   );
 };

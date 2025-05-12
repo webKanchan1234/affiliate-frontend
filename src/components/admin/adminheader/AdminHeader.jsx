@@ -19,7 +19,7 @@ const AdminHeader = () => {
     }
 
   return (
-    <header className="bg-gray-800 text-white flex justify-between items-center p-4 shadow-md">
+    <header className="bg-gray-800 text-white flex justify-between items-center p-4 shadow-md w-full">
       <Link to={"/"} className="text-lg ml-3 font-semibold">Home</Link>
       <h1 className="text-lg ml-3 font-semibold">Admin Dashboard</h1>
 

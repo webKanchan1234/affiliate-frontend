@@ -1,8 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FiBox, FiLayers, FiChevronLeft, FiChevronRight, FiChevronDown, FiChevronUp, FiPlus, FiUsers } from "react-icons/fi";
-import { MdOutlineMessage } from "react-icons/md";
-import { MdPayment } from "react-icons/md";
+import { 
+  FiBox, 
+  FiLayers, 
+  FiChevronLeft, 
+  FiChevronRight, 
+  FiChevronDown, 
+  FiChevronUp, 
+  FiPlus, 
+  FiUsers,
+  FiGrid,
+  FiTag,
+  FiAward,
+  FiStar,
+  FiCreditCard,
+  FiMessageSquare
+} from "react-icons/fi";
+import { MdOutlineMessage, MdPayment } from "react-icons/md";
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const [openTab, setOpenTab] = useState(null);
@@ -12,29 +26,25 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   };
 
   return (
-    <aside className={`bg-gray-900 text-white h-screen p-4 transition-all ${isSidebarOpen ? "w-64" : "w-16"} duration-300 relative`}>
+    <aside className={`bg-gray-900 text-white h-full p-4 ${isSidebarOpen ? "w-64" : "w-16"} relative transition-all duration-300`}>
       {/* Sidebar Toggle Button */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="absolute -right-4 top-6 bg-gray-700 text-white p-1 rounded-full"
+        className="absolute -right-4 top-6 bg-gray-700 text-white p-1 rounded-full cursor-pointer z-10"
       >
         {isSidebarOpen ? <FiChevronLeft size={20} /> : <FiChevronRight size={20} />}
       </button>
 
       <nav className="mt-6 space-y-4">
         <Link to={"/admin/dashboard"}>
-          <button
-            // onClick={() => toggleTab("dashboard")}
-            className="flex items-center justify-between w-full p-2 rounded hover:bg-gray-700 cursor-pointer"
-          >
+          <button className="flex items-center justify-between w-full p-2 rounded hover:bg-gray-700 cursor-pointer">
             <div className="flex items-center gap-2">
-              <FiBox size={20} />
+              <FiGrid size={20} />
               {isSidebarOpen && <span>Dashboard</span>}
             </div>
-
           </button>
-
         </Link>
+
         {/* Products Menu */}
         <div>
           <button
@@ -48,24 +58,28 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             {isSidebarOpen && (openTab === "products" ? <FiChevronUp /> : <FiChevronDown />)}
           </button>
           {(openTab === "products" || !isSidebarOpen) && (
-            <div className="ml-6 space-y-2">
-              <Link to="/admin/products" className="block items-center gap-2 p-2 hover:bg-gray-700 rounded">
+            <div className={`${isSidebarOpen ? "ml-6" : "ml-0"} space-y-2 mt-2`}>
+              <Link to="/admin/products" className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded">
+                <FiLayers size={18} />
                 {isSidebarOpen && "Products"}
               </Link>
-              <Link to="/admin/categories" className="block items-center gap-2 p-2 hover:bg-gray-700 rounded">
-                {isSidebarOpen && "Product Categories"}
+              <Link to="/admin/categories" className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded">
+                <FiTag size={18} />
+                {isSidebarOpen && "Categories"}
               </Link>
-              <Link to="/admin/brands" className="block items-center gap-2 p-2 hover:bg-gray-700 rounded">
-                {isSidebarOpen && "Product Brands"}
+              <Link to="/admin/brands" className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded">
+                <FiAward size={18} />
+                {isSidebarOpen && "Brands"}
               </Link>
-              <Link to="/admin/reviews" className="block items-center gap-2 p-2 hover:bg-gray-700 rounded">
-                {isSidebarOpen && "Product Reviews"}
+              <Link to="/admin/reviews" className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded">
+                <FiStar size={18} />
+                {isSidebarOpen && "Reviews"}
               </Link>
             </div>
           )}
         </div>
 
-        {/* users Menu */}
+        {/* Users Menu */}
         <div>
           <button
             onClick={() => toggleTab("users")}
@@ -78,16 +92,16 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             {isSidebarOpen && (openTab === "users" ? <FiChevronUp /> : <FiChevronDown />)}
           </button>
           {(openTab === "users" || !isSidebarOpen) && (
-            <div className="ml-6 space-y-2">
-              <Link to="/admin/users" className="block items-center gap-2 p-2 hover:bg-gray-700 rounded">
+            <div className={`${isSidebarOpen ? "ml-6" : "ml-0"} space-y-2 mt-2`}>
+              <Link to="/admin/users" className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded">
+                <FiUsers size={18} />
                 {isSidebarOpen && "Users"}
               </Link>
-              
             </div>
           )}
         </div>
 
-        {/* payment Menu */}
+        {/* Payments Menu */}
         <div>
           <button
             onClick={() => toggleTab("payments")}
@@ -100,17 +114,17 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             {isSidebarOpen && (openTab === "payments" ? <FiChevronUp /> : <FiChevronDown />)}
           </button>
           {(openTab === "payments" || !isSidebarOpen) && (
-            <div className="ml-6 space-y-2">
-              <Link to="/admin/payments" className="block items-center gap-2 p-2 hover:bg-gray-700 rounded">
+            <div className={`${isSidebarOpen ? "ml-6" : "ml-0"} space-y-2 mt-2`}>
+              <Link to="/admin/payments" className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded">
+                <FiCreditCard size={18} />
                 {isSidebarOpen && "Payments"}
               </Link>
-              
             </div>
           )}
         </div>
 
-         {/* Message Menu */}
-         <div>
+        {/* Messages Menu */}
+        <div>
           <button
             onClick={() => toggleTab("messages")}
             className="flex items-center justify-between w-full p-2 rounded hover:bg-gray-700 cursor-pointer"
@@ -122,11 +136,11 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             {isSidebarOpen && (openTab === "messages" ? <FiChevronUp /> : <FiChevronDown />)}
           </button>
           {(openTab === "messages" || !isSidebarOpen) && (
-            <div className="ml-6 space-y-2">
-              <Link to="/admin/messages" className="block items-center gap-2 p-2 hover:bg-gray-700 rounded">
+            <div className={`${isSidebarOpen ? "ml-6" : "ml-0"} space-y-2 mt-2`}>
+              <Link to="/admin/messages" className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded">
+                <FiMessageSquare size={18} />
                 {isSidebarOpen && "Messages"}
               </Link>
-              
             </div>
           )}
         </div>

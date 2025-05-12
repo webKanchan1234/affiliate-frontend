@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { createAdminReviewAction, uploadAdminReviewImageAction } from "../../../redux/actions/reviewAction";
 import { useParams } from "react-router-dom";
 import { FiTrash } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const AdminReviewCreate = () => {
   const dispatch = useDispatch();
@@ -99,13 +100,26 @@ const AdminReviewCreate = () => {
       return;
     }
 
-    dispatch(createAdminReviewAction({ data: { sections: updatedSections }, productId }))
-      .then(() => {
-        console.log("Review created successfully");
-        setSections([{ type: "text", content: "" }]); // Reset form
-      })
-      .catch((error) => console.error("Error:", error))
-      .finally(() => setLoading(false));
+    try {
+      await dispatch(createAdminReviewAction({ 
+        data: { sections: updatedSections }, 
+        productId 
+      })).unwrap();
+      
+      toast.success("Review created successfully!");
+      // Reset form to initial state
+      setSections(sections.map(section => ({
+        type: section.type,
+        content: section.type === "text" ? "" : null,
+        // Clear any file references for image sections
+        ...(section.type === "image" && { file: undefined })
+      })));
+    } catch (error) {
+      toast.error(error.message || "Failed to create review");
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -185,9 +199,9 @@ const AdminReviewCreate = () => {
 
       {/* Buttons */}
       <div className="flex gap-2 mt-4">
-        <button onClick={() => addSection("text")} className="p-2 bg-blue-500 text-white rounded-lg">Add Text</button>
-        <button onClick={() => addSection("image")} className="p-2 bg-green-500 text-white rounded-lg">Add Image</button>
-        <button onClick={handleSubmit} className={`p-2 bg-purple-500 text-white rounded-lg ${loading ? "opacity-50 cursor-not-allowed" : ""}`} disabled={loading}>
+        <button onClick={() => addSection("text")} className="p-2 bg-blue-500 text-white rounded-lg cursor-pointer">Add Text</button>
+        <button onClick={() => addSection("image")} className="p-2 bg-green-500 text-white rounded-lg cursor-pointer">Add Image</button>
+        <button onClick={handleSubmit} className={`p-2 bg-purple-500 text-white rounded-lg cursor-pointer ${loading ? "opacity-50 cursor-not-allowed" : ""}`} disabled={loading}>
           {loading ? "Submitting..." : "Submit"}
         </button>
       </div>

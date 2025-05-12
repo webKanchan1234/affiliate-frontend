@@ -18,10 +18,12 @@ export const createProductAction = createAsyncThunk(CREATE_PRODUCT, async ({data
 });
 
 
-export const updateProductAction = createAsyncThunk(UPDATE_PRODUCT, async ({productId,categoryId,data}, { rejectWithValue }) => {
+export const updateProductAction = createAsyncThunk(UPDATE_PRODUCT, async ({productId,categoryId,brandId,data}, { rejectWithValue }) => {
   try {
     // console.log("data",data)
-    return await updateProduct(productId,categoryId,data);
+    const res=await updateProduct(productId,categoryId,brandId,data);
+    console.log("res",res)
+    return res.data
   } catch (error) {
     return rejectWithValue(handleApiError(error));
   }

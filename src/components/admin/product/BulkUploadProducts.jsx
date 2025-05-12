@@ -1,18 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiUpload, FiCheck, FiX, FiFile, FiImage } from "react-icons/fi";
 import * as XLSX from "xlsx";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import Model from "../../common/Model";
-import { createProductAction } from "../../../redux/actions/productAction";
+import { createProductAction, getProducts } from "../../../redux/actions/productAction";
+import { useSelector } from "react-redux";
 
 const BulkUploadProducts = ({ isOpen, onClose }) => {
     const dispatch = useDispatch();
+    const { products: p, loading: productsLoading, error: productsError } = useSelector((state) => state.products);
+    
     const [file, setFile] = useState(null);
     const [products, setProducts] = useState([]);
     const [imageFiles, setImageFiles] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
+    const [existingProducts, setExistingProducts] = useState([]);
+    const [duplicates, setDuplicates] = useState([]);
+
+
+    useEffect(() => {
+        if (isOpen) {
+            dispatch(getProducts());
+        }
+        setExistingProducts(p.content)
+    }, [isOpen]);
+
+    // console.log(existingProducts)
 
     // 📌 Handle Excel file selection
     const handleFileChange = (event) => {
@@ -63,7 +78,22 @@ const BulkUploadProducts = ({ isOpen, onClose }) => {
             }));
 
             setProducts(formattedData);
+            checkForDuplicates(formattedData);
         };
+    };
+
+    const checkForDuplicates = (newProducts) => {
+        const duplicateItems = [];
+        const uniqueItems = newProducts.filter(product => {
+            const isDuplicate = existingProducts.some(
+                existing => existing.urlName === product.urlName
+            );
+            if (isDuplicate) duplicateItems.push(product);
+            return !isDuplicate;
+        });
+        
+        setDuplicates(duplicateItems);
+        return uniqueItems;
     };
 
     // 📌 Handle Image Upload
@@ -79,58 +109,68 @@ const BulkUploadProducts = ({ isOpen, onClose }) => {
             return;
         }
 
+        // Filter out duplicates
+        const uniqueProducts = checkForDuplicates(products);
+        
+        if (uniqueProducts.length === 0) {
+            toast.warning("All products in this file already exist in the system.");
+            return;
+        }
+
+        if (duplicates.length > 0) {
+            toast.warning(`Skipping ${duplicates.length} duplicate product(s).`);
+        }
+
         setUploading(true);
         setProgress(0);
 
+        
         try {
-            for (let index = 0; index < products.length; index++) {
-                const product = products[index];
+            for (let index = 0; index < uniqueProducts.length; index++) {
+                const product = uniqueProducts[index];
                 const formData = new FormData();
-                // Clone productData to avoid mutation
                 const productDataCopy = { ...product };
-                delete productDataCopy.imageNames; // Remove imageUrls as it's not needed in the JSON
-                delete productDataCopy.category; // Remove category as it's not needed in the JSON
-                delete productDataCopy.brand; // 
+                delete productDataCopy.imageNames;
+                delete productDataCopy.category;
+                delete productDataCopy.brand;
 
-                // Append product data as JSON
                 formData.append("product", JSON.stringify(productDataCopy));
 
-                // Attach images for the current product
                 if (product.imageNames.length > 0) {
                     product.imageNames.forEach((imageName) => {
                         const imageFile = imageFiles.find((file) => file.name === imageName.trim());
                         if (imageFile) {
                             formData.append("images", imageFile);
-                        } else {
-                            console.warn(`Image file not found: ${imageName}`);
                         }
                     });
                 }
 
-                // console.log("Uploading:", product.name);
-                // console.log("Images:", product.imageNames);
-                // console.log("Brand:", product.brand, "Category:", product.category);
-                // for (let pair of formData.entries()) {
-                //     console.log(pair[0], pair[1]);
-                // }
-                // Send data to API via Redux action
+                for (let pair of formData.entries()) {
+                    console.log(pair[0], pair[1]);
+                }
+        
+
                 await dispatch(createProductAction({
                     data: formData,
                     categoryId: product.category,
                     brandId: product.brand,
-
                 }))
-                    .unwrap()
-                    .then(() => {
-                        setProgress(((index + 1) / products.length) * 100);
-                    })
-                    .catch((error) => {
-                        console.error(`Failed to upload product ${product.name}:`, error);
-                        throw error;
-                    });
+                .unwrap()
+                .then(() => {
+                    setProgress(((index + 1) / uniqueProducts.length) * 100);
+                })
+                .catch((error) => {
+                    if (Array.isArray(error)) {
+                        error.forEach((errMsg) => {
+                            toast.error(errMsg); // or push to a UI list
+                        });
+                    } else {
+                        toast.error(error?.message || "Something went wrong while uploading.");
+                    }
+                });
             }
 
-            toast.success("All products uploaded successfully!");
+            toast.success(`${uniqueProducts.length} products uploaded successfully!`);
             onClose();
         } catch (error) {
             toast.error("Some products failed to upload.");
@@ -138,6 +178,7 @@ const BulkUploadProducts = ({ isOpen, onClose }) => {
             setUploading(false);
         }
     };
+
 
 
     return (

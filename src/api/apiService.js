@@ -1,4 +1,5 @@
 import axios from "axios";
+// import store from "../redux/store";
 
 // const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080/v1/api";
 const API_BASE_URL = `${import.meta.env.VITE_BASE_URL}/v1/api`;
@@ -37,11 +38,12 @@ api.interceptors.response.use(
       // Clear token and user data
       localStorage.removeItem("user");
       localStorage.removeItem("token");
-      // dispatch(logoutUserAction());
-      // Redirect to home page
-      if (window.location.pathname !== "/") {
-        window.location.href = "/";
-      }
+      // store.dispatch({ type: "LOGOUT" });
+
+        // ✅ Use `navigate` instead of `window.location.href`
+        if (navigate && window.location.pathname !== "/") {
+          navigate("/", { replace: true }); // Redirect without full page reload
+        }
     }
     return Promise.reject(error);
   }

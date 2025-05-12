@@ -44,8 +44,8 @@ const Dashboard = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        {stats.map((stat) => (
-          <div key={stat.id} className={`p-6 rounded-lg shadow-md text-white ${stat.color} flex items-center justify-between`}>
+        {stats.map((stat,index) => (
+          <div key={`${stat.id}_${index}`} className={`p-6 rounded-lg shadow-md text-white ${stat.color} flex items-center justify-between`}>
             <div>
               <h3 className="text-lg font-semibold">{stat.title}</h3>
               <p className="text-3xl font-bold">{stat.count}</p>

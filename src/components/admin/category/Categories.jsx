@@ -44,7 +44,18 @@ const Categories = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(categoryData);
+    // console.log(categoryData);
+
+    // Basic validation
+  if (!categoryData.title.trim() || !categoryData.urlName.trim() || !categoryData.description.trim()) {
+    toast.error("All fields are required.");
+    return;
+  }
+
+  // if (!(image instanceof File)) {
+  //   toast.error("Please upload a valid image.");
+  // }
+  
 
     const formData = new FormData();
     formData.append(
@@ -58,10 +69,7 @@ const Categories = () => {
 
     if (categoryData.image instanceof File) {
       formData.append("image", categoryData.image);
-    } else {
-      console.error("Image is not a valid file:", categoryData.image);
-      return;
-    }
+    } 
 
     // // ✅ Debug FormData
     // for (let pair of formData.entries()) {

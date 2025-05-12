@@ -13,21 +13,19 @@ export const productDetails = async (urlName) => {
 };
 
 export const createProduct = async (data,categoryId,brandId) => {
-  try {
-    const response= await api.post(`/products/post/category/${categoryId}/brand/${brandId}`, data);
-  } catch (error) {
-    console.log("error",error);
-  }
-  return "response.data"
+  const response= await api.post(`/products/post/category/${categoryId}/brand/${brandId}`, data);
+  return response.data
+  // return "response.data"
 };
 
-export const updateProduct = async (productId,categoryId,data) => {
+export const updateProduct = async (productId,categoryId,brandId,data) => {
   try {
-    const response= await api.put(`/products/update-product/${productId}/category/${categoryId}`, data);
+    const response= await api.put(`/products/update-product/${productId}/category/${categoryId}/brand/${brandId}`, data);
+    console.log("productapi",response.data);
+    return response.data;
   } catch (error) {
     console.log("error",error);
   }
-  return "response.data"
 };
 
 export const fetchpProductByCategory = async (category) => {

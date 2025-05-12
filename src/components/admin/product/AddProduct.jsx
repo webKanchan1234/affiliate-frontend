@@ -163,9 +163,9 @@ const AddProduct = () => {
         }
 
         // Debugging: Check what is being sent
-        for (let pair of formData.entries()) {
-            console.log(pair[0], pair[1]);
-        }
+        // for (let pair of formData.entries()) {
+        //     console.log(pair[0], pair[1]);
+        // }
 
         try {
             dispatch(createProductAction({ data: formData, categoryId: selectedId,brandId:2 }))

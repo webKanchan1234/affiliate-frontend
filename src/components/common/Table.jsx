@@ -5,7 +5,7 @@ import { IoMdEye } from "react-icons/io";
 const Table = ({ title, columns, data = [], onEdit, onDelete, onView, showRoleUpdate, rowClass }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   // Ensure `data` is always an array
   if (!Array.isArray(data)) {
@@ -73,7 +73,7 @@ const Table = ({ title, columns, data = [], onEdit, onDelete, onView, showRoleUp
                         ))}
                         <td className="p-3 flex gap-3 justify-center">
                           <button onClick={() => onView(row)} className="text-green-900 hover:text-green-700 cursor-pointer">
-                            <IoMdEye size={28} />
+                            <IoMdEye size={18} />
                           </button>
                           <button onClick={() => onEdit(row)} className="text-blue-500 hover:text-blue-700 cursor-pointer">
                             <FiEdit size={18} />

@@ -10,6 +10,7 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,6 +22,7 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // console.log(formData);
+    setIsSubmitting(true);
     dispatch(contactusAction(formData))
       .unwrap()
       .then((data) => {
@@ -30,9 +32,14 @@ const Contact = () => {
       .catch((error) => {
         console.log(error);
         toast.error("Message failed to send!");
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
      // Reset form
   };
+
+  const isFormValid = formData.name && formData.email && formData.message;
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -85,9 +92,14 @@ const Contact = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition cursor-pointer"
+            disabled={!isFormValid || isSubmitting}
+            className={`w-full p-2 rounded transition ${
+              (!isFormValid || isSubmitting)
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+            }`}
           >
-            Send Message
+            {isSubmitting ? "Sending..." : "Send Message"}
           </button>
         </form>
       </div>
