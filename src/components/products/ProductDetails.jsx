@@ -18,6 +18,8 @@ const ProductDetails = () => {
 
     const { product, loading: productsLoading, error: productsError } = useSelector((state) => state.productDetails);
 
+    // console.log("product", product);
+
     // Calculate ratings data
     const { ratingsData, averageRating, totalRatings } = useMemo(() => {
         const result = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
@@ -48,7 +50,7 @@ const ProductDetails = () => {
 
     // Specification sections
     const specificationSections = useMemo(() => (
-        ['general', 'design', 'performance', 'storage', 'camera', 'battery', 'network', 'media', 'others']
+        ['general', 'design', 'performance','display', 'storage', 'camera', 'battery', 'network','sensor', 'media', 'others']
     ), []);
 
     // Fetch product details
@@ -74,16 +76,16 @@ const ProductDetails = () => {
     }
 
     if (productsError) {
-        return <ErrorMessage 
-            message={productsError} 
+        return <ErrorMessage
+            message={productsError}
             retry={() => dispatch(productDetailsAction(details))}
             fullPage
         />;
     }
 
     if (!product) {
-        return <ErrorMessage 
-            message="Product not found" 
+        return <ErrorMessage
+            message="Product not found"
             retry={() => navigate('/')}
             fullPage
         />;
@@ -136,24 +138,24 @@ const ProductDetails = () => {
                 {/* Product Details */}
                 <div className='w-full md:w-1/2 lg:w-2/3 border border-slate-300 p-4 rounded-lg'>
                     <h2 className='font-bold text-xl mb-4'>{product.name}</h2>
-                    <p className='text-lg mb-4 text-slate-700'>Price: ₹{product.price.toLocaleString()}</p>
+                    <p className='text-lg mb-4 text-slate-700'>Price: ₹{Number(product?.price).toLocaleString()}</p>
 
                     {/* Seller Links */}
                     <div className='flex flex-col gap-4 mb-6'>
                         {product.sellers.map((seller, index) => (
                             <div key={`seller-${index}`} className='flex flex-col sm:flex-row justify-between items-center p-3 border border-slate-200 rounded-lg'>
                                 <Link to={seller.link} className='w-16 h-16 mb-2 sm:mb-0'>
-                                    <img 
-                                        src={seller.logo || "https://via.placeholder.com/64"} 
-                                        alt={`${seller.name} logo`} 
+                                    <img
+                                        src={seller.logo || "https://via.placeholder.com/64"}
+                                        alt={`${seller.name} logo`}
                                         className='w-full h-full object-contain'
                                         loading="lazy"
                                     />
                                 </Link>
                                 <div className='flex items-center gap-4'>
-                                    <p className='text-lg font-semibold'>₹{product.price.toLocaleString()}</p>
-                                    <Link 
-                                        to={seller.link} 
+                                    <p className='text-lg font-semibold'>₹{Number(seller?.price).toLocaleString()}</p>
+                                    <Link
+                                        to={seller.link}
                                         className='bg-red-500 text-white py-2 px-4 rounded uppercase hover:bg-red-600 transition-colors'
                                         rel="noopener noreferrer"
                                         target="_blank"
@@ -184,8 +186,8 @@ const ProductDetails = () => {
                     </div>
 
                     <div className='text-right'>
-                        <button 
-                            onClick={() => scrollToSection("spec")} 
+                        <button
+                            onClick={() => scrollToSection("spec")}
                             className='text-red-500 hover:text-red-600 transition-colors cursor-pointer'
                             aria-label="View all specifications"
                         >
@@ -205,8 +207,8 @@ const ProductDetails = () => {
             <section className='bg-white p-6 mt-1 border border-slate-300 rounded-lg'>
                 <div className='flex justify-between items-center mb-6'>
                     <h3 className='font-semibold text-xl'>Pros and Cons</h3>
-                    <Link 
-                        to={`/review/${product.urlName}`} 
+                    <Link
+                        to={`/review/${product.urlName}`}
                         className='text-red-500 hover:text-red-600 transition-colors'
                         aria-label="Read full review"
                     >
@@ -259,12 +261,12 @@ const ProductDetails = () => {
 
             <div className='flex flex-col gap-4 mb-2 bg-white'>
                 {product?.sellers.map((seller, index) => (
-                    <div key={index} className='flex flex-col sm:flex-row justify-between items-center p-3 '>
+                    <div key={index} className='flex flex-col sm:flex-row justify-between items-center p-3 border border-slate-200 '>
                         <Link to={seller.link} className='w-16 h-16 mb-2 sm:mb-0'>
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT6ppYvn4kCipfwvI3NG3v4eXyH3EGxtRJnA&s" alt="Seller Logo" className='w-full h-full object-contain' />
+                            <img src={seller.logo} className='w-full h-full object-contain' />
                         </Link>
                         <div className='flex items-center gap-4'>
-                            <p className='text-lg font-semibold'>Rs. {product?.price}</p>
+                            <p className='text-lg font-semibold'>Rs. {Number(seller?.price).toLocaleString()}</p>
                             <Link to={seller.link} className='bg-red-500 text-white py-2 px-4 rounded uppercase hover:bg-red-600 transition-colors'>
                                 Go to Store
                             </Link>
@@ -277,14 +279,16 @@ const ProductDetails = () => {
             <section className='bg-white p-6 mt-1 border border-slate-300 rounded-lg'>
                 <h3 id='spec' className='font-semibold text-xl mb-6'>Detailed Specifications</h3>
                 {specificationSections.map((section) => (
-                    <div key={section} className='flex flex-col md:flex-row gap-4 py-4 border-b border-slate-200 last:border-b-0'>
-                        <div className='w-full md:w-1/5 text-slate-500 font-semibold'>
-                            {section.charAt(0).toUpperCase() + section.slice(1)}
+                    product[section] && Object.keys(product[section]).length > 0 && (
+                        <div key={section} className='flex flex-col md:flex-row gap-4 py-4 border-b border-slate-200 last:border-b-0'>
+                            <div className='w-full md:w-1/5 text-slate-500 font-semibold'>
+                                {section.charAt(0).toUpperCase() + section.slice(1)}
+                            </div>
+                            <div className='w-full md:w-4/5'>
+                                <SpecificationTable specifications1={product[section]} />
+                            </div>
                         </div>
-                        <div className='w-full md:w-4/5'>
-                            <SpecificationTable specifications1={product[section]} />
-                        </div>
-                    </div>
+                    )
                 ))}
             </section>
         </div>

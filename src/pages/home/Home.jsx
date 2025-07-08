@@ -100,7 +100,7 @@ const Home = ({ isServerDown }) => {
       ) : (
         <>
           {/* <div className="w-full md:w-4/6 mx-auto px-4"> */}
-          <div className="w-full md:w-4/6 mx-auto px-4 py-1 mt-2 bg-white text-center">
+          {/* <div className="w-full md:w-4/6 mx-auto px-4 py-1 mt-2 bg-white text-center">
             <h2 className="text-lg font-semibold text-indigo-600">Exclusive Offer for You! 🎉</h2>
             <p className="text-gray-600 mt-0">
               Buy from <span className="font-bold text-black">Amazon</span>, <span className="font-bold text-black">Flipkart</span>, or other links here and earn <span className="text-green-600 font-bold">3-4% cashback</span> as a reward! 🚀
@@ -112,7 +112,7 @@ const Home = ({ isServerDown }) => {
             >
               🎁 Claim Your Reward Now! 🎁
             </Link>
-          </div>
+          </div> */}
           {/* <RewardBanner page="home" /> */}
           {/* <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold px-6 py-3 rounded-full shadow-lg flex items-center gap-3 transition-all hover:scale-105 z-50">
             <span className="text-lg animate-blink">🎁 Earn 3-4% Cashback!</span>

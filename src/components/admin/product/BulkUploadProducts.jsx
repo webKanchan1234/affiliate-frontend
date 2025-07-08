@@ -145,9 +145,9 @@ const BulkUploadProducts = ({ isOpen, onClose }) => {
                     });
                 }
 
-                for (let pair of formData.entries()) {
-                    console.log(pair[0], pair[1]);
-                }
+                // for (let pair of formData.entries()) {
+                //     console.log(pair[0], pair[1]);
+                // }
         
 
                 await dispatch(createProductAction({

@@ -14,6 +14,7 @@ export const productDetails = async (urlName) => {
 
 export const createProduct = async (data,categoryId,brandId) => {
   const response= await api.post(`/products/post/category/${categoryId}/brand/${brandId}`, data);
+  console.log("productapi",response.data);
   return response.data
   // return "response.data"
 };

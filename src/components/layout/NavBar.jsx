@@ -162,12 +162,12 @@ const Navbar = ({ isServerDown }) => {
           // </>
           <h1></h1>
         )}
-        <Link
+        {/* <Link
           to="/submit/proof"
           className="text-gray-400 hover:text-white cursor-pointer transition-colors animate-blink"
         >
           🎉 Claim Your 3-4% Reward Now! 🎉
-        </Link>
+        </Link> */}
       </div>
     </nav>
   );
