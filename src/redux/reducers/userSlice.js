@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { allUsersAction, changePasswordAction, deleteUserAction, loadUserAction, loginUserAction, logoutUserAction, updateUserProfileAction, updateUserRoleAction, userProfileAction } from "../actions/userAction";
-import { ERROR_FETCHING_ALL_USERS, ERROR_FETCHING_LOGIN_USER, ERROR_FETCHING_UPDATE_USER_PROFILE, ERROR_FETCHING_UPDATE_USER_ROLE, ERROR_FETCHING_USER_PROFILE, LOAD_USER } from "../constants/userConstant";
+import { allUsersAction, changePasswordAction, deleteUserAction, loadUserAction, loginUserAction, logoutUserAction, registerUserAction, updateUserProfileAction, updateUserRoleAction, userProfileAction } from "../actions/userAction";
+import { ERROR_FETCHING_ALL_USERS, ERROR_FETCHING_LOGIN_USER, ERROR_FETCHING_REGISTER_USER, ERROR_FETCHING_UPDATE_USER_PROFILE, ERROR_FETCHING_UPDATE_USER_ROLE, ERROR_FETCHING_USER_PROFILE, LOAD_USER } from "../constants/userConstant";
 import { logoutUser } from "../../api/userApi";
 
 
@@ -10,6 +10,16 @@ export const signupUserReducer=createSlice({
   reducers:{},
   extraReducers:(builder)=>{
       builder
+      .addCase(registerUserAction.pending, (state) => { state.loading = true; })
+      .addCase(registerUserAction.fulfilled,(state,action)=>{
+          state.loading=false;
+          state.user=action.payload
+      })
+      .addCase(registerUserAction.rejected,(state,action)=>{
+          state.loading=false;
+          state.error=action.payload || ERROR_FETCHING_REGISTER_USER
+      })
+
       .addCase(updateUserRoleAction.pending, (state) => { state.loading = true; })
       .addCase(updateUserRoleAction.fulfilled,(state,action)=>{
           state.loading=false;
@@ -179,6 +189,7 @@ export const allUsersReducer=createSlice({
 
 
 export const userReducers={
+    registerUser:signupUserReducer.reducer,
     loginUser:loginUserReducer.reducer,
     userProfile:userProfileReducer.reducer,
     loadUser:loadUserReducer.reducer,

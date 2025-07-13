@@ -26,6 +26,7 @@ const store = configureStore({
     allMessages:contactusReducers.allMessages,
     message:contactusReducers.message,
     loginUser:userReducers.loginUser,
+    registerUser:userReducers.registerUser,
     userProfile:userReducers.userProfile,
     loadUser:userReducers.loadUser,
     allUsers:userReducers.allUsers,

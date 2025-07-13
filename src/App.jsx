@@ -12,6 +12,7 @@ import Footer from "./components/footer/Footer";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import ServerStatus from "./components/common/ServerStatus";
 import axios from "axios";
+import AuthPage from "./components/loginSignUp/AuthPage";
 
 // Lazy-loaded components
 const Home = lazy(() => import("./pages/home/Home"));
@@ -190,7 +191,7 @@ function AppContent() {
         }>
           <Route path="/admin-login/login" element={
             <Suspense fallback={<div>Loading...</div>}>
-              <Login />
+              <AuthPage />
             </Suspense>
           } />
           <Route path="/admin/register" element={

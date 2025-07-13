@@ -6,20 +6,32 @@ import {
   ERROR_FETCHING_ALL_USERS,
   ERROR_FETCHING_LOGIN_USER,
   ERROR_FETCHING_LOGOUT_USER,
+  ERROR_FETCHING_REGISTER_USER,
   ERROR_FETCHING_USER_PROFILE,
   LOAD_USER,
   LOGIN_USER,
   LOGOUT_USER,
+  REGISTER_USER,
   UPDATE_USER_PROFILE,
   UPDATE_USER_ROLE,
   USER_PROFILE,
 } from "../constants/userConstant";
-import { allUsers, changePassword, deleteUser, loginUser, logoutUser, updateUserProfile, updateUserRole, userProfile } from "../../api/userApi";
+import { allUsers, changePassword, deleteUser, loginUser, logoutUser, registerUser, updateUserProfile, updateUserRole, userProfile } from "../../api/userApi";
 import { handleApiError } from "../../utils/handleApiError";
 
 
 
-
+// ✅ Login and store user info
+export const registerUserAction = createAsyncThunk(REGISTER_USER, async (data, { rejectWithValue }) => {
+  try {
+    const {user } = await registerUser(data);
+    console.log("User registered successfully:", user);
+    return { user };
+  } catch (error) {
+    // console.error("Login Error:", error.response?.data || error.message);
+    return rejectWithValue(error.response?.data || ERROR_FETCHING_REGISTER_USER);
+  }
+});
 
 // ✅ Login and store user info
 export const loginUserAction = createAsyncThunk(LOGIN_USER, async (data, { rejectWithValue }) => {

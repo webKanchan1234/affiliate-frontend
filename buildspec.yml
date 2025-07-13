@@ -1,0 +1,28 @@
+version: 0.2
+
+env:
+  variables:
+    OUTPUT_DIR: "dist"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo Installing dependencies...
+      - npm ci
+
+  build:
+    commands:
+      - echo Building React Vite app...
+      - npm run build
+
+  post_build:
+    commands:
+      - echo Vite build complete.
+
+artifacts:
+  base-directory: $OUTPUT_DIR
+  files:
+    - '**/*'
+  discard-paths: no
