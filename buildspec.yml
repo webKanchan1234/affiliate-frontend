@@ -1,28 +1,24 @@
 version: 0.2
 
-env:
-  variables:
-    OUTPUT_DIR: "dist"
-
 phases:
   install:
     runtime-versions:
       nodejs: 20
     commands:
-      - echo Installing dependencies...
+      - echo "Installing dependencies..."
       - npm install --legacy-peer-deps
 
   build:
     commands:
-      - echo Building Vite React app...
+      - echo "Building React Vite project..."
       - npm run build
 
   post_build:
     commands:
-      - echo Build complete.
+      - echo "Deploying to S3 bucket..."
+      - aws s3 sync dist/ s3://affilliate-frontend --delete
 
 artifacts:
-  base-directory: $OUTPUT_DIR
+  base-directory: dist
   files:
     - '**/*'
-  discard-paths: no
