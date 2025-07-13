@@ -10,16 +10,16 @@ phases:
       nodejs: 20
     commands:
       - echo Installing dependencies...
-      - npm install
+      - npm install --legacy-peer-deps
 
   build:
     commands:
-      - echo Building React Vite app...
+      - echo Building Vite React app...
       - npm run build
 
   post_build:
     commands:
-      - echo Vite build complete.
+      - echo Build complete.
 
 artifacts:
   base-directory: $OUTPUT_DIR
