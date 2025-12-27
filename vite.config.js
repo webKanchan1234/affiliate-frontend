@@ -1,18 +1,18 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import ssr from 'vite-plugin-ssr/plugin'
-import sitemap from 'vite-plugin-sitemap';
-import compression from 'vite-plugin-compression';
-import springBoot from '@wim.deblauwe/vite-plugin-spring-boot';
+import sitemap from 'vite-plugin-sitemap'
+import compression from 'vite-plugin-compression'
 
 export default defineConfig({
+  base: '/', // ✅ FIXES /dist asset issue
+
   plugins: [
     tailwindcss(),
     react(),
-    springBoot(),
+
     sitemap({
-      hostname: 'https://yourdomain.com',
+      hostname: 'https://99mobiletech.com',
       exclude: ['/admin', '/login'],
       routes: [
         '/products',
@@ -20,20 +20,23 @@ export default defineConfig({
         '/products/laptops'
       ]
     }),
+
     compression({
       algorithm: 'brotliCompress'
     })
   ],
+
   server: {
-    port: 3000, // Change the port here
+    port: 3000,
     proxy: {
       '/v1/api': {
-        target: 'https://affiliate-backend-env.eba-k8rmm6wu.ap-south-1.elasticbeanstalk.com',
+        target: 'https://api.99mobiletech.com',
         changeOrigin: true,
-        secure: true, // <- Set to true now that HTTPS is enabled
+        secure: true,
       },
     },
   },
+
   test: {
     globals: true,
     environment: 'jsdom',
