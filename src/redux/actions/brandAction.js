@@ -45,6 +45,7 @@ export const deleteBrandAction = createAsyncThunk(
 
 export const getAllBrandsAction = createAsyncThunk(GET_ALL_BRANDS, async (_, { rejectWithValue }) => {
   try {
+    console.log("fetching brands");
     return await fetchAllBrands();
   } catch (error) {
     return rejectWithValue(handleApiError(error));

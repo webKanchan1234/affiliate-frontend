@@ -26,6 +26,13 @@ export default defineConfig({
   ],
   server: {
     port: 3000, // Change the port here
+    proxy: {
+      '/v1/api': {
+        target: 'https://affiliate-backend-env.eba-k8rmm6wu.ap-south-1.elasticbeanstalk.com',
+        changeOrigin: true,
+        secure: true, // <- Set to true now that HTTPS is enabled
+      },
+    },
   },
   test: {
     globals: true,

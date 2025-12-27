@@ -15,6 +15,7 @@ export const createCategoryAction=createAsyncThunk(CREATE_CATEGORY, async (data,
 
 export const getAllCategories=createAsyncThunk(GET_ALL_CATEGORIES, async (_, { rejectWithValue }) => {
   try {
+    console.log("fetching categories");
     return await fetchAllCategories();
   } catch (error) {
     return rejectWithValue(handleApiError(error));

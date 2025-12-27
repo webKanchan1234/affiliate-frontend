@@ -7,6 +7,8 @@ import { createBrandAction } from '../../../redux/actions/brandAction';
 import Form from '../../common/Form';
 import { toast } from 'react-toastify'
 import { Helmet } from 'react-helmet-async';
+import useFormValidation from "../../../hooks/useFormValidation";
+import { brandSchema } from "../../../utils/formSchemas";
 
 const AddBrand = () => {
     const dispatch = useDispatch();
@@ -20,6 +22,8 @@ const AddBrand = () => {
         image: "",
         category: "" // Stores selected category ID for form submission
     });
+
+    const { errors, validate } = useFormValidation(brandSchema);
 
     // console.log(categories)
     useEffect(() => {
@@ -45,7 +49,11 @@ const AddBrand = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(brandData)
+        // console.log(brandData)
+        if (!validate(brandData)) {
+            toast.error("Please fix validation errors");
+            return;
+        }
 
         const formData = new FormData();
         formData.append("brand", JSON.stringify({
@@ -93,7 +101,7 @@ const AddBrand = () => {
             </div>
 
             <div className="bg-white p-6 mb-2 rounded shadow">
-                <Form formData={brandData} setFormData={setBrandData} handleSubmit={handleSubmit} categories={categories} loading={loading} />
+                <Form formData={brandData} setFormData={setBrandData} handleSubmit={handleSubmit} categories={categories} errors={errors} loading={loading} />
             </div>
         </div>
     );

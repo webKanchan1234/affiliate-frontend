@@ -1,7 +1,7 @@
 import React from "react";
 import { FiTrash } from "react-icons/fi";
 
-const Form = ({ formData, setFormData, handleSubmit, categories = [],loading }) => {
+const Form = ({ formData, setFormData, handleSubmit, errors, categories = [], loading }) => {
     const handleChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
@@ -39,8 +39,14 @@ const Form = ({ formData, setFormData, handleSubmit, categories = [],loading }) 
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageUpload}
-                                className="w-full border rounded-lg px-4 py-2 file:bg-blue-500 file:text-white file:px-3 file:py-2 file:border-none file:rounded-lg file:cursor-pointer"
+                                className={`w-full border rounded-lg px-4 py-2
+      ${errors?.image ? "border-red-500" : "border-gray-300"}
+      file:bg-blue-500 file:text-white file:px-3 file:py-2
+      file:border-none file:rounded-lg file:cursor-pointer
+    `}
                             />
+
+
                             {/* Image Preview */}
                             {formData.imageUrl && (
                                 <div className="mt-4 relative group w-32">
@@ -63,7 +69,9 @@ const Form = ({ formData, setFormData, handleSubmit, categories = [],loading }) 
                             <select
                                 value={formData.category}
                                 onChange={(e) => handleChange(field, e.target.value)}
-                                className="w-full border rounded-lg px-4 py-2 mt-1"
+                                className={`w-full border rounded-lg px-4 py-2 mt-1
+          ${errors?.category ? "border-red-500" : "border-gray-300"}
+        `}
                             >
                                 <option value="">Select Category</option>
                                 {categories.map((category) => (
@@ -83,8 +91,11 @@ const Form = ({ formData, setFormData, handleSubmit, categories = [],loading }) 
                                 placeholder={`Enter ${field}`}
                                 value={formData[field] || ""}
                                 onChange={(e) => handleChange(field, e.target.value)}
-                                className="w-full border rounded-lg px-4 py-2 mt-1"
+                                className={`w-full border rounded-lg px-4 py-2 mt-1
+      ${errors?.[field] ? "border-red-500 focus:ring-red-500" : "border-gray-300"}
+    `}
                             />
+
                         </div>
                     );
                 }
@@ -93,7 +104,7 @@ const Form = ({ formData, setFormData, handleSubmit, categories = [],loading }) 
             {/* Submit Button */}
             <div className="col-span-2 flex justify-end mt-4 ">
                 <button type="submit" disabled={loading} className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition cursor-pointer">
-                {loading ? "Creating..." : "Submit"}
+                    {loading ? "Creating..." : "Submit"}
                 </button>
             </div>
         </form>

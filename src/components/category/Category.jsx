@@ -169,7 +169,7 @@ const Category = () => {
               {filteredProducts.map((product) => (
                 <Card
                   key={product.id}
-                  image={`${BASE_URL}${product.imageUrls[0]}`}
+                  image={product.imageUrls[0]?.url}
                   title={product.name}
                   price={product.price}
                   url={`/${product.urlName}`}

@@ -9,7 +9,7 @@ export const createCategory = async (data) => {
 
 export const fetchAllCategories = async () => {
   const response = await api.get("/categories/");
-  // console.log("categories",response.data);
+  console.log("categories",response.data);
   return response.data;
 };
 

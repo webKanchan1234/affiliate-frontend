@@ -43,7 +43,7 @@ const CategoryRowType = ({ title, category, products, BASE_URL, fullWidth = fals
                 >
                     {products?.map((product, index) => (
                         <div key={index} className='flex-shrink-0 w-48 sm:w-56 md:w-64 snap-center'>
-                            <Card product={product} BASE_URL={BASE_URL} />
+                            <Card product={product} />
                         </div>
                     ))}
                 </div>

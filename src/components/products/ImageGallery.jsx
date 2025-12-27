@@ -5,11 +5,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 const ImageGallery = ({ images = [] }) => {
+  console.log("images in ImageGallery:", images);
   const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
     if (images.length > 0) {
-      setSelectedImage(images[0]);
+      setSelectedImage(images[0].url);
     }
   }, [images]);
 
@@ -24,13 +25,13 @@ const ImageGallery = ({ images = [] }) => {
       images.map((img, index) => (
         <SwiperSlide key={`${img}-${index}`}>
           <img
-            src={img}
+            src={img.url}
             alt={`Thumbnail ${index + 1}`}
             loading="lazy"
             className={`w-12 h-12 object-cover cursor-pointer border-2 rounded ${
               selectedImage === img ? "border-blue-500" : "border-gray-300"
             }`}
-            onClick={() => handleThumbnailClick(img)}
+            onClick={() => handleThumbnailClick(img.url)}
           />
         </SwiperSlide>
       )),

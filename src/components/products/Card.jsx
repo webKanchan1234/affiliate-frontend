@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export const Card = ({key, product, BASE_URL }) => {
+export const Card = ({key, product }) => {
+  console.log("product in Card:", product);
   return (
     <Link
       key={product?.productId}
@@ -12,7 +13,7 @@ export const Card = ({key, product, BASE_URL }) => {
       <div className="relative w-full h-40 overflow-hidden rounded-lg border border-gray-200 shadow-sm bg-gray-100 flex items-center justify-center">
         <img
           alt={product?.name}
-          src={`${BASE_URL + product?.imageUrls[0]}`}
+          src={`${product?.imageUrls[0].url}`}
           className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-90 group-hover:scale-110"
         />
       </div>

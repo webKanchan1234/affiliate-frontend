@@ -45,8 +45,11 @@ const ProductDetails = () => {
 
     // Memoized product images
     const productImages = useMemo(() => (
-        product?.imageUrls?.map((img) => `${BASE_URL}${img}`) || []
-    ), [product, BASE_URL]);
+        product?.imageUrls?.map((img) => img) || []
+    ), [product]);
+
+    
+    
 
     // Specification sections
     const specificationSections = useMemo(() => (
@@ -98,7 +101,7 @@ const ProductDetails = () => {
                 <meta name="description" content={`${product.name} - ${product.description?.substring(0, 160)}...`} />
                 <meta property="og:title" content={product.name} />
                 <meta property="og:description" content={product.description?.substring(0, 160)} />
-                <meta property="og:image" content={productImages[0]} />
+                <meta property="og:image" content={productImages[0].url} />
                 <meta property="og:type" content="product" />
                 <script type="application/ld+json">
                     {JSON.stringify({

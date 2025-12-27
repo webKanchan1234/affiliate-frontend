@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 const Card = ({ image, title, price, url }) => {
+  console.log("image in Card:", image);
   return (
     <Link 
       to={url} 
